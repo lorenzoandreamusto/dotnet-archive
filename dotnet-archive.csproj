@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>dotnet-archive</ToolCommandName>
+    <PackageId>dotnet-archive</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Lorenzo Musto</Authors>
+    <Description>.NET global tool designed to package and run framework-dependent .NET applications as a single-file portable archive with a .dna extension.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/lorenzoandreamusto/dotnet-archive</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+
+
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.CommandLine" Version="3.0.0-preview.4.26230.115" />
+  </ItemGroup>
+
+</Project>

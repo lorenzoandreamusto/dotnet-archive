@@ -80,11 +80,18 @@ public static class Exporter
 
         Console.WriteLine($"Project found: {Path.GetFileName(csprojPath)}");
         Console.WriteLine($"Building and publishing in progress...");
-
+        
         var startInfo = new ProcessStartInfo
         {
             FileName = "dotnet",
-            Arguments = $"publish \"{csprojPath}\" -c Release -o \"{tempPublishDir}\"",
+            Arguments = $"publish \"{csprojPath}\" -c Release -o \"{tempPublishDir}\" " +
+                        "-p:PublishSingleFile=false " +
+                        "-p:SelfContained=false " +
+                        "-p:UseAppHost=false " +
+                        "-p:RuntimeIdentifier=\"\" " +
+                        "-p:PublishTrimmed=false " +
+                        "-p:PublishReadyToRun=false " +
+                        "-p:PublishAot=false",
             RedirectStandardOutput = true,
             RedirectStandardError = true,
             UseShellExecute = false,

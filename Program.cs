@@ -13,6 +13,16 @@ var rootOutputOption = new Option<string>("--output", "-o")
     Description = "Il percorso del file .dna di output"
 };
 
+var registerCommand = new Command("register", "Associa automaticamente l'estensione .dna a questo tool sul sistema operativo corrente.");
+
+registerCommand.SetAction(parseResult =>
+{
+    int result = AssociationManager.Register();
+    return result;
+});
+
+rootCommand.Subcommands.Add(registerCommand);
+
 rootCommand.Arguments.Add(rootProjectArgument);
 rootCommand.Options.Add(rootOutputOption);
 

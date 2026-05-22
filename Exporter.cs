@@ -6,48 +6,51 @@ public static class Exporter
 {
     public static int ExportProject(string projectPath, string outputPath)
     {
+
         string targetPath = string.IsNullOrWhiteSpace(projectPath)
             ? Directory.GetCurrentDirectory()
             : Path.GetFullPath(projectPath);
 
-        string csprojPath = "";
+        string projectFilePath = "";
 
         if (File.Exists(targetPath))
         {
             string extension = Path.GetExtension(targetPath).ToLowerInvariant();
-            if (extension == ".csproj")
+            if (extension == ".csproj" || extension == ".fsproj")
             {
-                csprojPath = targetPath;
+                projectFilePath = targetPath;
             }
             else if (extension == ".sln" || extension == ".slnx")
             {
                 Console.WriteLine($"Error: You specified a solution file ({extension}).");
-                Console.WriteLine("This tool packages a single executable project (.csproj).");
-                Console.WriteLine("Specify the path to the .csproj project file or move to its directory.");
+                Console.WriteLine("This tool packages a single executable project (.csproj or .fsproj).");
+                Console.WriteLine("Specify the path to the project file or move to its directory.");
                 return 1;
             }
             else
             {
-                Console.WriteLine($"Error: The file '{targetPath}' is not a .NET project file (.csproj).");
+                Console.WriteLine($"Error: The file '{targetPath}' is not a valid project file (.csproj or .fsproj).");
                 return 1;
             }
         }
         else if (Directory.Exists(targetPath))
         {
-            var csprojFiles = Directory.GetFiles(targetPath, "*.csproj");
+            var projectFiles = Directory.GetFiles(targetPath, "*.csproj")
+                .Concat(Directory.GetFiles(targetPath, "*.fsproj"))
+                .ToArray();
 
-            if (csprojFiles.Length == 1)
+            if (projectFiles.Length == 1)
             {
-                csprojPath = csprojFiles[0];
+                projectFilePath = projectFiles[0];
             }
-            else if (csprojFiles.Length > 1)
+            else if (projectFiles.Length > 1)
             {
-                Console.WriteLine($"Error: Multiple .csproj files found in the directory '{targetPath}':");
-                foreach (var file in csprojFiles)
+                Console.WriteLine($"Error: Multiple projects found in directory '{targetPath}':");
+                foreach (var file in projectFiles)
                 {
                     Console.WriteLine($"  - {Path.GetFileName(file)}");
                 }
-                Console.WriteLine("Explicitly specify which .csproj file to compile and export.");
+                Console.WriteLine("Explicitly specify which project file to compile and export.");
                 return 1;
             }
             else
@@ -58,12 +61,12 @@ public static class Exporter
 
                 if (solutionFiles.Length > 0)
                 {
-                    Console.WriteLine($"Error: No .csproj file found in the current directory, but a solution file is present ({Path.GetFileName(solutionFiles[0])}).");
-                    Console.WriteLine("Move to the specific console/executable project directory before running the command.");
+                    Console.WriteLine($"Error: No C# or F# project found in the current directory, but a solution file is present ({Path.GetFileName(solutionFiles[0])}).");
+                    Console.WriteLine("Move to the specific executable project directory before running the command.");
                 }
                 else
                 {
-                    Console.WriteLine($"Error: No .csproj file found in the directory '{targetPath}'.");
+                    Console.WriteLine($"Error: No .csproj or .fsproj file found in directory '{targetPath}'.");
                 }
                 return 1;
             }
@@ -74,17 +77,17 @@ public static class Exporter
             return 1;
         }
 
-        string projectDir = Path.GetDirectoryName(csprojPath)!;
-        string projectName = Path.GetFileNameWithoutExtension(csprojPath);
+        string projectDir = Path.GetDirectoryName(projectFilePath)!;
+        string projectName = Path.GetFileNameWithoutExtension(projectFilePath);
         string tempPublishDir = Path.Combine(Path.GetTempPath(), $"pub-{Guid.NewGuid()}");
 
-        Console.WriteLine($"Project found: {Path.GetFileName(csprojPath)}");
+        Console.WriteLine($"Project found: {Path.GetFileName(projectFilePath)}");
         Console.WriteLine($"Building and publishing in progress...");
-        
+
         var startInfo = new ProcessStartInfo
         {
             FileName = "dotnet",
-            Arguments = $"publish \"{csprojPath}\" -c Release -o \"{tempPublishDir}\" " +
+            Arguments = $"publish \"{projectFilePath}\" -c Release -o \"{tempPublishDir}\" " +
                         "-p:PublishSingleFile=false " +
                         "-p:SelfContained=false " +
                         "-p:UseAppHost=false " +
@@ -97,7 +100,7 @@ public static class Exporter
             UseShellExecute = false,
             CreateNoWindow = true
         };
-
+        
         using var process = Process.Start(startInfo);
         if (process == null)
         {

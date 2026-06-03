@@ -60,21 +60,31 @@ jobs:
         with:
           dotnet-version: 10.0.x
 
+      - name: Restore
+        run: dotnet restore dotnet-archive.sln
+
+      - name: Build
+        run: dotnet build dotnet-archive.sln -c Release --no-restore
+
+      - name: Pack tool
+        run: dotnet pack src/DotNetArchive.Cli/dotnet-archive.csproj -c Release -o ./artifacts --no-build
+
       - name: Install tool
+        shell: bash
         run: |
-          dotnet pack src/DotNetArchive.Cli/dotnet-archive.csproj -c Release -o ./artifacts --no-build
           dotnet tool install -g dotnet-archive --add-source ./artifacts --version 1.1.0
-          echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+          echo "$HOME/.dotnet/tools" >> "$GITHUB_PATH"
 
       - name: Run smoke tests
         shell: bash
         run: |
           set -e
+          DNASAMPLE="$RUNNER_TEMP/HelloWorld.dna"
           dotnet archive version
           cd samples/HelloWorld
-          dotnet archive export -o /tmp/HelloWorld.dna
-          dotnet archive info /tmp/HelloWorld.dna
-          dotnet archive verify /tmp/HelloWorld.dna
-          dotnet archive run /tmp/HelloWorld.dna -- --smoke
+          dotnet archive export -o "$DNASAMPLE"
+          dotnet archive info "$DNASAMPLE"
+          dotnet archive verify "$DNASAMPLE"
+          dotnet archive run "$DNASAMPLE" -- --smoke
           cd ../..
           echo "Smoke tests passed."

@@ -1,0 +1,18 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinning>true</CentralPackageTransitivePinning>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageVersion Include="System.CommandLine" Version="3.0.0-preview.4.26230.115" />
+    <PackageVersion Include="Microsoft.Win32.Registry" Version="5.0.0" />
+    <PackageVersion Include="xunit" Version="2.9.3" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageVersion Include="FluentAssertions" Version="7.0.0" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.4" />
+    <PackageVersion Include="Verify.Xunit" Version="30.5.0" />
+    <PackageVersion Include="Verify" Version="30.5.0" />
+    <PackageVersion Include="GitHubActionsTestLogger" Version="2.4.0" />
+  </ItemGroup>
+</Project>

@@ -1,25 +1,33 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net10.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <RootNamespace>DotNetArchive.Cli</RootNamespace>
+    <AssemblyName>dotnet-archive</AssemblyName>
+
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>dotnet-archive</ToolCommandName>
     <PackageId>dotnet-archive</PackageId>
-    <Version>1.0.1</Version>
+    <Version>1.1.0</Version>
     <Authors>Lorenzo Musto</Authors>
     <Description>.NET global tool designed to package and run framework-dependent .NET applications as a single-file portable archive with a .dna extension.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/lorenzoandreamusto/dotnet-archive</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-
-
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.CommandLine" Version="3.0.0-preview.4.26230.115" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.CommandLine" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="DotNetArchive.Tests" />
   </ItemGroup>
 
 </Project>
